@@ -1,2 +1,2 @@
-# Eclipse
- GMD1 Project
+# ECLIPSE
+ GMD1 Game Project
