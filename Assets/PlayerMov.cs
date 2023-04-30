@@ -2,68 +2,109 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
  
-[RequireComponent(typeof(CharacterController))]
 public class PlayerMov : MonoBehaviour
 {
-    public float walkSpeed = 6f;
-    public float runSpeed = 12f;
-    public float jumpPower = 7f;
-    public float gravity = 10f;
-    public float lookSpeed = 2f;
-    public float lookXLimit = 45f;
-    Vector3 moveDirection = Vector3.zero;
-    float rotationX = 0;
-    public bool canMove = true;
-    CharacterController characterController;
+    [Header("Movement")]
+    public float moveSpeed;
+    public float groundDrag;
+    public float jumpForce;
+    public float jumpCooldown;
+    public float airMultiplier;
+    bool readyToJump;
 
-    void Start()
+    [Header("Keybinds")]
+    public KeyCode jumpKey = KeyCode.Space;
+
+    [Header("Ground Check")]
+    public float playerHeight;
+    public LayerMask whatsGround;
+    bool grounded;
+
+    public Transform orientation;
+
+    float horizontalInput;
+    float verticalInput;
+
+    Vector3 moveDirection;
+
+    Rigidbody rb;
+
+    private void Start()
     {
-        characterController = GetComponent<CharacterController>();
+        rb = GetComponent<Rigidbody>();
+        rb.freezeRotation = true;
     }
- 
-    void Update()
+
+    private void Update()
     {
- 
-        #region Handles Movement
-        Vector3 forward = transform.TransformDirection(Vector3.forward);
-        Vector3 right = transform.TransformDirection(Vector3.right);
- 
-        // Press Left Shift to run
-        bool isRunning = Input.GetKey(KeyCode.LeftShift);
-        float curSpeedX = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Vertical") : 0;
-        float curSpeedY = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Horizontal") : 0;
-        float movementDirectionY = moveDirection.y;
-        moveDirection = (forward * curSpeedX) + (right * curSpeedY);
- 
-        #endregion
- 
-        #region Handles Jumping
-        if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
+        // Ground Check
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatsGround);
+        
+        CustomInput();
+        SpeedControl();
+
+        // Handle Drag
+        if(grounded)
         {
-            moveDirection.y = jumpPower;
+            rb.drag = groundDrag;
         }
         else
         {
-            moveDirection.y = movementDirectionY;
+            rb.drag = 0;
         }
- 
-        if (!characterController.isGrounded)
+    }
+
+    private void FixedUpdate()
+    {
+        MovePlayer();
+    }
+
+    private void CustomInput(){
+        horizontalInput = Input.GetAxisRaw("Horizontal");
+        verticalInput = Input.GetAxisRaw("Vertical");
+
+        // Jump
+        if(Input.GetKey(jumpKey) && readyToJump && grounded){
+            readyToJump = false;
+
+            Jump();
+
+            Invoke(nameof(ResetJump), jumpCooldown);
+        }
+    }
+
+    private void MovePlayer(){
+        // Movement direction
+        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+
+        // On ground
+        if(grounded)
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+
+        // In air
+        else if(!grounded)
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+    }
+
+    private void SpeedControl(){
+        Vector3 flatVelocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+        // Limit velocity if needed
+        if(flatVelocity.magnitude > moveSpeed)
         {
-            moveDirection.y -= gravity * Time.deltaTime;
+            Vector3 limitedVelocity = flatVelocity.normalized * moveSpeed;
+            rb.velocity = new Vector3(limitedVelocity.x, rb.velocity.y, limitedVelocity.z);
         }
- 
-        #endregion
- 
-        #region Handles Rotation
-        characterController.Move(moveDirection * Time.deltaTime);
- 
-        if (canMove)
-        {
-            rotationX += -Input.GetAxis("Mouse Y") * lookSpeed;
-            rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
-            transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
-        }
- 
-        #endregion
+    }
+
+    public void Jump(){
+        // Reset Y Velocity
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+    }
+
+    public void ResetJump(){
+        readyToJump = true;
     }
 }
