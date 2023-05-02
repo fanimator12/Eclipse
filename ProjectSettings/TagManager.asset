@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - StartMenuMusic
   - FirstLevelMusic
+  - Intro
   layers:
   - Default
   - TransparentFX
