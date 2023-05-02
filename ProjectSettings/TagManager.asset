@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Ground
   - Enemy
+  - StartMenuMusic
+  - FirstLevelMusic
   layers:
   - Default
   - TransparentFX
