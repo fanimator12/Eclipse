@@ -4,11 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Ground
-  - Enemy
-  - StartMenuMusic
-  - FirstLevelMusic
-  - Intro
+  - CinemachineTarget
+  - WayPoints
+  - Knight
   layers:
   - Default
   - TransparentFX
@@ -16,12 +14,6 @@ TagManager:
   - 
   - Water
   - UI
-  - whatsPlayer
-  - 
-  - 
-  - 
-  - whatsGround
-  - whatsEnemy
   - 
   - 
   - 
@@ -30,7 +22,13 @@ TagManager:
   - 
   - 
   - 
-  - postProcessing
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
   - 
   - 
   - 
