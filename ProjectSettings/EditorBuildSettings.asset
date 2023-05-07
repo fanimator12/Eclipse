@@ -6,9 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/StarterAssets/ThirdPersonController/Scenes/StartMenu.unity
+    path: Assets/Playground/Scenes/StartMenu.unity
     guid: e7875361355a49347b72f868b3a1fe25
   - enabled: 1
-    path: Assets/StarterAssets/ThirdPersonController/Scenes/Playground.unity
+    path: Assets/Playground/Scenes/Playground.unity
     guid: e9017d5f96b9f09489b4b37e1d6eb914
   m_configObjects: {}
