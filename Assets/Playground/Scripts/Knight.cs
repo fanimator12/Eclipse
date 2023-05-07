@@ -7,9 +7,11 @@ public class Knight : MonoBehaviour
     public Slider healthBar;
     public Animator animator;
 
-    private void Update()
+    void Update()
     {
         healthBar.value = HP;
+        Debug.Log("Enemy HP updated");
+        Debug.Log(HP);
     }
 
     public void TakeDamage(int damageAmount)
@@ -19,10 +21,12 @@ public class Knight : MonoBehaviour
         {
             animator.SetTrigger("die");
             GetComponent<Collider>().enabled = false;
+            Debug.Log("Enemy died");
         }
         else
         {
             animator.SetTrigger("damage");
+            Debug.Log("Damage given");
         }
     }
 }

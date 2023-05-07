@@ -1,4 +1,4 @@
-﻿ using UnityEngine;
+﻿using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -106,9 +106,14 @@ namespace StarterAssets
         private StarterAssetsInputs _input;
         private GameObject _mainCamera;
 
+
         private const float _threshold = 0.01f;
 
         private bool _hasAnimator;
+        public GameObject projectileObject;
+        public Transform projectilePoint;
+        public GameObject playerCam;
+        public GameObject combatCam;
 
         private bool IsCurrentDeviceMouse
         {
@@ -135,7 +140,7 @@ namespace StarterAssets
         private void Start()
         {
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
-            
+
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
@@ -159,6 +164,31 @@ namespace StarterAssets
             JumpAndGravity();
             GroundedCheck();
             Move();
+            AimShoot();
+        }
+
+        private void AimShoot()
+        {
+            if (_input.isAiming && Grounded && !_input.sprint)
+            {
+                _animator.SetBool("Aiming", _input.isAiming);
+                _animator.SetBool("Shooting", _input.isShooting);
+                playerCam.SetActive(false);
+                combatCam.SetActive(true);
+            }
+            else
+            {
+                _animator.SetBool("Aiming", false);
+                _animator.SetBool("Shooting", false);
+                playerCam.SetActive(true);
+                combatCam.SetActive(false);
+            }
+        }
+
+        public void Shoot()
+        {
+            GameObject spell = Instantiate(projectileObject, projectilePoint.position, transform.rotation);
+            spell.GetComponent<Rigidbody>().AddForce(transform.forward * 25f, ForceMode.Impulse);
         }
 
         private void LateUpdate()
