@@ -112,8 +112,8 @@ namespace StarterAssets
         private bool _hasAnimator;
         public GameObject projectileObject;
         public Transform projectilePoint;
-
-
+        public GameObject playerCam;
+        public GameObject combatCam;
 
         private bool IsCurrentDeviceMouse
         {
@@ -173,19 +173,22 @@ namespace StarterAssets
             {
                 _animator.SetBool("Aiming", _input.isAiming);
                 _animator.SetBool("Shooting", _input.isShooting);
-
+                playerCam.SetActive(false);
+                combatCam.SetActive(true);
             }
             else
             {
                 _animator.SetBool("Aiming", false);
                 _animator.SetBool("Shooting", false);
+                playerCam.SetActive(true);
+                combatCam.SetActive(false);
             }
         }
 
         public void Shoot()
         {
-            GameObject Arrow = Instantiate(projectileObject, projectilePoint.position, transform.rotation);
-            Arrow.GetComponent<Rigidbody>().AddForce(transform.forward * 25f, ForceMode.Impulse);
+            GameObject spell = Instantiate(projectileObject, projectilePoint.position, transform.rotation);
+            spell.GetComponent<Rigidbody>().AddForce(transform.forward * 25f, ForceMode.Impulse);
         }
 
         private void LateUpdate()
