@@ -1,7 +1,7 @@
 # ECLIPSE - GMD1 Game Project
 The scope of the game ECLIPSE is to fight dark characters that cloud the player's mind and defeat them while scoring on the way. It is designed to help players improve their mental resilience by battling against negative thoughts and emotions represented by dark characters within the game.
 
-## [List of followed tutorials](https://www.youtube.com/playlist?list=PLSrddgDA1mFNh91mFXJE3DadQMUO4nMf)
+## [List of followed tutorials](https://www.youtube.com/playlist?list=PLSrddgDA1mFNh91mFXJE3DadQMUO4nMfT)
 
 ## Used assets
 1. [Starter Assets - Third Person Character Controller](https://assetstore.unity.com/packages/essentials/starter-assets-third-person-character-controller-196526)
