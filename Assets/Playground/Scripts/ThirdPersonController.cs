@@ -106,14 +106,26 @@ namespace StarterAssets
         private StarterAssetsInputs _input;
         private GameObject _mainCamera;
 
-
         private const float _threshold = 0.01f;
 
+        [Header("References")]
+        public Transform player;
         private bool _hasAnimator;
-        public GameObject projectileObject;
-        public Transform projectilePoint;
+        public GameObject fireObject;
+        public Transform firePoint;
         public GameObject playerCam;
         public GameObject combatCam;
+
+        [Header("Settings")]
+        public int totalAttacks;
+        public float attackCooldown;
+
+        [Header("Attacking")]
+        public KeyCode attackKey = KeyCode.Mouse0;
+        public float attackForce;
+        public float attackUpwardForce;
+
+        bool readyToAttack;
 
         private bool IsCurrentDeviceMouse
         {
@@ -126,7 +138,6 @@ namespace StarterAssets
 #endif
             }
         }
-
 
         private void Awake()
         {
@@ -149,6 +160,7 @@ namespace StarterAssets
 #else
 			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
 #endif
+            readyToAttack = true;
 
             AssignAnimationIDs();
 
@@ -164,33 +176,57 @@ namespace StarterAssets
             JumpAndGravity();
             GroundedCheck();
             Move();
-            AimShoot();
+            AimAttack();
+
+            if(Input.GetKeyDown(attackKey) && readyToAttack && totalAttacks > 0)
+            {
+                Attack();
+            }
         }
 
-        private void AimShoot()
+        private void AimAttack()
         {
             if (_input.isAiming && Grounded && !_input.sprint)
             {
                 _animator.SetBool("Aiming", _input.isAiming);
-                _animator.SetBool("Shooting", _input.isShooting);
+                _animator.SetBool("Attacking", _input.isAttacking);
                 playerCam.SetActive(false);
                 combatCam.SetActive(true);
             }
             else
             {
                 _animator.SetBool("Aiming", false);
-                _animator.SetBool("Shooting", false);
+                _animator.SetBool("Attacking", false);
                 playerCam.SetActive(true);
                 combatCam.SetActive(false);
             }
         }
 
-        public void Shoot()
+        public void Attack()
         {
-            GameObject spell = Instantiate(projectileObject, projectilePoint.position, transform.rotation);
-            spell.GetComponent<Rigidbody>().AddForce(transform.forward * 25f, ForceMode.Impulse);
+            readyToAttack = false;
+
+            GameObject projectile = Instantiate(fireObject, firePoint.position, player.transform.rotation);
+            Rigidbody projectileRb = projectile.GetComponent<Rigidbody>();
+            Vector3 forceDirection = transform.forward;
+            RaycastHit hit;
+
+            if(Physics.Raycast(player.transform.position, player.transform.forward, out hit, 500f))
+            {
+                forceDirection = (hit.point - firePoint.position).normalized;
+            }
+
+            Vector3 forceToAdd = forceDirection * attackForce + transform.up * attackUpwardForce;
+            projectileRb.AddForce(forceToAdd, ForceMode.Impulse);
+            totalAttacks--;
+
+            Invoke(nameof(ResetAttack), attackCooldown);
         }
 
+        private void ResetAttack()
+        {
+            readyToAttack = true;
+        }
         private void LateUpdate()
         {
             CameraRotation();
