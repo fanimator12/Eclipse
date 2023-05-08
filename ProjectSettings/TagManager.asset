@@ -6,7 +6,9 @@ TagManager:
   tags:
   - CinemachineTarget
   - WayPoints
-  - Knight
+  - StartMenuMusic
+  - Enemy
+  - Attack
   layers:
   - Default
   - TransparentFX
