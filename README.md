@@ -11,4 +11,4 @@ The scope of the game ECLIPSE is to fight dark characters that cloud the player'
 4. [Procedural Fire](https://assetstore.unity.com/packages/vfx/particles/fire-explosions/procedural-fire-141496)
 
 ## Note
-WebGL available
+[WebGL available](https://fanimator12.github.io/Eclipse/Builds/index.html)
