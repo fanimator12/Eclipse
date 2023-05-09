@@ -12,3 +12,6 @@ The scope of the game ECLIPSE is to fight dark characters that cloud the player'
 
 ## Note
 [WebGL available](https://fanimator12.github.io/Eclipse/Builds/index.html)
+
+## Keys
+![image](https://user-images.githubusercontent.com/56829184/237030154-c72b75c6-6910-44f8-9676-6d32930d864c.png)
